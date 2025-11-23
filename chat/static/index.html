@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <title>Chat</title>
+    <style>
+      #main-box{
+        border: solid 1px skyblue;
+        border-radius: 5px;
+      }
+      .input{
+           padding: 5px;
+      }
+      #join_button{
+         padding-top: 5px;
+         padding-bottom: 5px;
+         margin-left: 104px;
+      }
+      #page{
+        display: flex;
+        justify-content: center;
+      }
+      #main-box{
+        padding: 20px;
+      }
+      .buttons{
+        padding: 6px 15px;
+        background-color: #2196F3;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 8px; color: white; 
+      }
+      .buttons:hover{
+        background-color: #ffffff;
+        color: black; border: 1px solid #2196F3;
+      }
+      #forms{
+        margin-top: 10px;
+      }
+    </style>
+
+    </head>
+    <body>
+        <div id="page">
+
+        <div id="main-box">
+        <h1>WebSocket Chat</h1>
+         
+        <div class="input">
+        <label>Room Name :</label>
+        <input id="join_room_input_btn" placeholder="Enter the room name" />
+       </div>
+
+        <div class="input">
+        <label> User Name :</label>
+        <input id="userNamess" placeholder="Enter the user name" />
+        </div>
+
+         <div id="join_button">
+        <button class="buttons" onclick="joinRoomName()" >Join</button> 
+        </div>
+      
+
+        <diV id="forms">
+        <form action="" onsubmit="sendMessage(event)">
+            <input type="text" id="messageText" autocomplete="off" placeholder="send messages"/>
+            <button class="buttons">Send</button>
+        </form>
+        </diV>
+        
+        <h3 id="heading"></h3>
+
+
+        <ul id='messages'>
+        </ul>
+
+        </div>
+
+        </div>
+        <script>
+        // const room_name_input = Document.getElementById('room_name')
+        
+        var ws
+    
+            function joinRoomName(){
+             const roominput = document.getElementById('join_room_input_btn').value
+             const userNameinput = document.getElementById('userNamess').value
+
+             if( !roominput || !userNameinput ){
+                alert("Enter the room Nmae and username correctly")
+             }
+               ws = new WebSocket(`ws://localhost:8000/ws/${roominput}/${userNameinput}`);
+                
+
+
+                
+                ws.onmessage = function(event) {
+                heading = document.getElementById('heading')
+                heading.innerHTML = `Room Name is :- ${roominput}`
+                var messages = document.getElementById('messages')
+                var message = document.createElement('li')
+                message.innerHTML= event.data
+                messages.appendChild(message)
+            };
+            ws.onclose = function(event){
+                console.log(event.code)
+                console.log(event.reason)
+            }
+
+           }
+
+           
+
+
+                function sendMessage(event) {
+                var input = document.getElementById("messageText")
+                ws.send(input.value)
+                event.preventDefault()
+            }
+
+
+ 
+        </script>
+    </body>
+</html>
